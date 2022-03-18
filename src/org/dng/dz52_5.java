@@ -1,10 +1,7 @@
 package org.dng;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Stream;
-
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Задание 5
@@ -20,20 +17,28 @@ public class dz52_5 {
             arr[i] = (int) (Math.random() * 20) - 10; //rnd belong area from 0 to 1 -> rnd*20 belong [0:20] -> rnd*10-20 belong [-10:10]
         }
 //        int[] arr = {1, 2, 2, 2, 4, 5, 5};
+        System.out.println("The parsing array is:");
         System.out.println(Arrays.toString(arr));
 
-        Set<Integer> myUnDoubledSet = new HashSet<>();
-        Set<Integer> myDoubledSet = new HashSet<>();
+        Map<Integer, Integer> myMap = new HashMap<>();//the arrays value will be as a key and the number of reduplication will be as a Value of Map
+        int oldVal;
         for (int value : arr) {
-            if (!myUnDoubledSet.contains(Integer.valueOf(value))) {
-                myUnDoubledSet.add(Integer.valueOf(value));
-            }
-            else {
-                myDoubledSet.add(Integer.valueOf(value));
+            if (myMap.containsKey(value)) {
+                oldVal = myMap.get(value);
+                myMap.replace(value, ++oldVal);
+            } else {
+                myMap.put(value, 1);
             }
         }
-        System.out.print("Number of doubled values in array is "+myDoubledSet.size()+" : ");
-        Stream.of(myDoubledSet).forEach(val-> System.out.println(val.toString()));
+
+        myMap = myMap.entrySet().stream().filter(e -> e.getValue() > 1).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+        //forEach(e -> System.out.println("Value " + e.getKey() + " occurs " + e.getValue() + " times"));
+        System.out.println("The number of duplicated values is " + myMap.size());
+
+        for (var entry : myMap.entrySet()) {
+            //System.out.println(entry.getKey() + "/" + entry.getValue());
+            System.out.println("Value " + entry.getKey() + " occurs " + entry.getValue() + " times");
+        }
 
     }
 }
