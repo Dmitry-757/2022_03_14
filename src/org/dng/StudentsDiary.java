@@ -1,5 +1,9 @@
 package org.dng;
 
+import java.util.Scanner;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -44,16 +48,32 @@ class DynemicalArr<T>{
         System.out.println("*********");
     }
 
+    //we will send a copy of the array outside, not the arrey itself - in order not to violate the principle of Encapsulation and "Open Closed Principle"  ))
     public Object[] getArr(){
-        return array;
+        Object[] newArray = new Object[array.length-1];
+        newArray = new Object[array.length];
+        System.arraycopy(array, 0, newArray, 0, array.length);
+        return newArray;
+    }
+
+    public boolean isValuePresent(String topic){
+        boolean isPresent = Stream.of(array)
+                .anyMatch(v -> (v == topic) );
+        return isPresent;
     }
 
 }
 
-class MarkService{
+class DiaryService{
     static void add(String topic, int mark){
-        StudentsDiary.topic.add(topic);
-        StudentsDiary.mark.add(mark);
+        //check for inputting topic is new
+        if(!StudentsDiary.topic.isValuePresent(topic)) {
+            StudentsDiary.topic.add(topic);
+            StudentsDiary.mark.add(mark);
+
+            StudentsDiary.topic.show("+");
+            StudentsDiary.mark.show("+");
+        }
     }
 
    static double getAverageMark(Object[] array){
@@ -93,29 +113,74 @@ public class StudentsDiary {
     static DynemicalArr<Integer> mark = new DynemicalArr<>();
 
     public static void main(String[] args) {
-        mark.add(9);
-        mark.add(1);
-        mark.add(4);
-        mark.add(2);
-        mark.show("+");
+//        topic.add("maths");
+//        topic.add("phisics");
+//        topic.show("+");
+//        mark.add(9);
+//        mark.add(1);
+//        mark.add(4);
+//        mark.add(2);
+//        mark.show("+");
+//
+//        System.out.println(MarkService.getAverageMark(mark.getArr()));
+//        System.out.println(MarkService.getMaxMark(mark.getArr()));
+//        System.out.println(MarkService.getMinMark(mark.getArr()));
 
-        System.out.println(MarkService.getAverageMark(mark.getArr()));
-        System.out.println(MarkService.getMaxMark(mark.getArr()));
-        System.out.println(MarkService.getMinMark(mark.getArr()));
 
-//        try (Scanner sc = new Scanner(System.in)){
-//            boolean stop = false;
-//            int choice = 0;
-//            while (!stop){
-//                System.out.println("Enter your choice: 1 - add theme and mark, 2 - remove theme, 3 - exit");
-//                if(sc.hasNextInt()){
-//                    choice = sc.nextInt();
-//                }
-//                switch (choice){
-//                    case 1 ->{ }
-//                }
-//            }
-//        }
+        Pattern topicPattern = Pattern.compile("^[a-zA-Z]+");
+        Pattern markPattern = Pattern.compile("[2-5]");
+        try (Scanner sc = new Scanner(System.in)){
+            boolean stop = false;
+            int choice = 0;
+            String line;
+            while (!stop){
+                System.out.println("Enter your choice: 1 - add topic and mark, 2 - remove theme, 3 - exit");
+                if(sc.hasNextInt()){
+                    choice = sc.nextInt();
+                    sc.nextLine();
+                }
+                switch (choice){
+                    case 1 ->{
+                        System.out.println("Enter topic and mark. Example: mathematics 5");
+                        try{
+                            if(sc.hasNextLine()) {
+                                String topic = null;
+                                int mark = 0;
+                                line = sc.nextLine();
+                                Matcher topicMatcher = topicPattern.matcher(line);
+                                if (topicMatcher.find()) {
+                                    topic = topicMatcher.group();
+                                    System.out.println("topic = " + topic);
+                                } else {
+                                    throw new Exception("wrong input - can`t reed topic...");
+                                }
+
+                                Matcher markMatcher = markPattern.matcher(line);
+                                if (markMatcher.find() ) {
+                                    mark = Integer.valueOf(markMatcher.group()).intValue();
+                                    System.out.println("mark = " + mark);
+                                } else {
+                                    throw new Exception("wrong input - can`t reed mark...");
+                                }
+
+                                DiaryService.add(topic, mark);
+
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    case 3 ->{
+                        stop = true;
+                        System.out.println("Our great program is ended ;) !");
+                    }
+                    default -> {
+                        System.out.println("In our roulette you can only three option for choice: 1, 2 or 3 ;)");
+                    }
+                }
+
+            }
+        }
 
     }
 
