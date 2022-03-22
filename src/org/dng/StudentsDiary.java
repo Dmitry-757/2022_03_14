@@ -1,5 +1,6 @@
 package org.dng;
 
+import java.util.OptionalInt;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -8,7 +9,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 class DynemicalArr<T>{
-    private final int INIT_SIZE = 10;
+    private final int INIT_SIZE = 2;
     private final int RESIZE_QUANTITY = 5;
     private final int CONDITION4CUT = 5;
     private int pointerOnLastEl = 0;
@@ -58,8 +59,24 @@ class DynemicalArr<T>{
 
     public boolean isValuePresent(String topic){
         boolean isPresent = Stream.of(array)
-                .anyMatch(v -> (v == topic) );
+                .filter(v -> v!= null)
+                .map(v -> v.toString())
+                .anyMatch(v -> (v.equals(topic)) );
         return isPresent;
+    }
+
+    public int getIndexOfVal(String topic){
+        OptionalInt result = OptionalInt.of(-1) ;
+        if (isValuePresent(topic)) {
+            if (array[0].getClass().getName() == "java.lang.String") {
+                result =
+                        IntStream
+                                .range(0, array.length)
+                                .filter(i -> array[i].equals(topic))
+                                .findFirst();
+            }
+        }
+        return result.getAsInt();
     }
 
 }
@@ -75,6 +92,18 @@ class DiaryService{
             StudentsDiary.mark.show("+");
         }
     }
+
+    static void remove(String topic){
+        int idx = StudentsDiary.topic.getIndexOfVal(topic);
+        if (idx >= 0) {
+            StudentsDiary.topic.remove(idx);
+            StudentsDiary.mark.remove(idx);
+
+            StudentsDiary.topic.show("-");
+            StudentsDiary.mark.show("-");
+        }
+    }
+
 
    static double getAverageMark(Object[] array){
             int[] arr = Stream.of(array)
@@ -170,6 +199,26 @@ public class StudentsDiary {
                             System.out.println(e.getMessage());
                         }
                     }
+                    case 2 ->{
+                        System.out.println("Enter topic for removal. Example: MarksizmLenenizm");
+                        try{
+                            if(sc.hasNextLine()) {
+                                String topic = null;
+                                line = sc.nextLine();
+                                Matcher topicMatcher = topicPattern.matcher(line);
+                                if (topicMatcher.find()) {
+                                    topic = topicMatcher.group();
+                                    System.out.println("topic = " + topic);
+                                } else {
+                                    throw new Exception("wrong input - can`t reed topic...");
+                                }
+                                DiaryService.remove(topic);
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+
                     case 3 ->{
                         stop = true;
                         System.out.println("Our great program is ended ;) !");
