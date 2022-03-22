@@ -1,5 +1,8 @@
 package org.dng;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 class DynemicalArr<T>{
     private final int INIT_SIZE = 10;
     private final int RESIZE_QUANTITY = 5;
@@ -40,33 +43,77 @@ class DynemicalArr<T>{
         }
         System.out.println("*********");
     }
+
+    public Object[] getArr(){
+        return array;
+    }
+
+}
+
+class MarkService{
+    static void add(String topic, int mark){
+        StudentsDiary.topic.add(topic);
+        StudentsDiary.mark.add(mark);
+    }
+
+   static double getAverageMark(Object[] array){
+            int[] arr = Stream.of(array)
+                    .filter(v -> v!= null)
+                    .filter(v -> v.getClass().getName()=="java.lang.Integer")
+                    .map(v->(int)v)
+                    .mapToInt(Integer::intValue)
+                    .toArray();
+            return IntStream.of(arr).average().getAsDouble();
+    }
+
+    static double getMaxMark(Object[] array){
+        int[] arr = Stream.of(array)
+                .filter(v -> v!= null)
+                .filter(v -> v.getClass().getName()=="java.lang.Integer")
+                .map(v->(int)v)
+                .mapToInt(Integer::intValue)
+                .toArray();
+        return IntStream.of(arr).max().getAsInt();
+    }
+
+    static double getMinMark(Object[] array){
+        int[] arr = Stream.of(array)
+                .filter(v -> v!= null)
+                .filter(v -> v.getClass().getName()=="java.lang.Integer")
+                .map(v->(int)v)
+                .mapToInt(Integer::intValue)
+                .toArray();
+        return IntStream.of(arr).min().getAsInt();
+    }
+
 }
 
 public class StudentsDiary {
+    static DynemicalArr<String> topic = new DynemicalArr<>();
+    static DynemicalArr<Integer> mark = new DynemicalArr<>();
 
     public static void main(String[] args) {
-//        ArrayList<String> subj = new ArrayList<>();
-//        ArrayList<Integer> ratings = new ArrayList<>();
-//        Integer[] arr = {1,2,3};
-        DynemicalArr<Integer> myDArr = new DynemicalArr<>();
-        myDArr.add(1);
-        myDArr.add(2);
-        myDArr.add(3);
-        myDArr.remove(2);
-        myDArr.add(4);
-        myDArr.add(5);
+        mark.add(9);
+        mark.add(1);
+        mark.add(4);
+        mark.add(2);
+        mark.show("+");
 
-//        Object[] arr2 = AddValue2Array(arr,4);
-//        for (Object i:arr2){
-//            System.out.println(i);
-//        }
+        System.out.println(MarkService.getAverageMark(mark.getArr()));
+        System.out.println(MarkService.getMaxMark(mark.getArr()));
+        System.out.println(MarkService.getMinMark(mark.getArr()));
 
-//        String[] subj = null;
-//        int[] ratings = null;
 //        try (Scanner sc = new Scanner(System.in)){
 //            boolean stop = false;
+//            int choice = 0;
 //            while (!stop){
-//
+//                System.out.println("Enter your choice: 1 - add theme and mark, 2 - remove theme, 3 - exit");
+//                if(sc.hasNextInt()){
+//                    choice = sc.nextInt();
+//                }
+//                switch (choice){
+//                    case 1 ->{ }
+//                }
 //            }
 //        }
 
