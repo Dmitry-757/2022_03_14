@@ -2,7 +2,6 @@ package org.dng;
 
 import java.util.OptionalInt;
 import java.util.Scanner;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -10,8 +9,8 @@ import java.util.stream.Stream;
 
 class DynemicalArr<T>{
     private final int INIT_SIZE = 2;
-    private final int RESIZE_QUANTITY = 5;
-    private final int CONDITION4CUT = 5;
+    private final int RESIZE_QUANTITY = 2;
+    private final int CONDITION4CUT = 2;
     private int pointerOnLastEl = 0;
     private Object[] array = new Object[INIT_SIZE];
 
@@ -142,19 +141,6 @@ public class StudentsDiary {
     static DynemicalArr<Integer> mark = new DynemicalArr<>();
 
     public static void main(String[] args) {
-//        topic.add("maths");
-//        topic.add("phisics");
-//        topic.show("+");
-//        mark.add(9);
-//        mark.add(1);
-//        mark.add(4);
-//        mark.add(2);
-//        mark.show("+");
-//
-//        System.out.println(MarkService.getAverageMark(mark.getArr()));
-//        System.out.println(MarkService.getMaxMark(mark.getArr()));
-//        System.out.println(MarkService.getMinMark(mark.getArr()));
-
 
         Pattern topicPattern = Pattern.compile("^[a-zA-Z]+");
         Pattern markPattern = Pattern.compile("[2-5]");
@@ -181,7 +167,7 @@ public class StudentsDiary {
                                     topic = topicMatcher.group();
                                     System.out.println("topic = " + topic);
                                 } else {
-                                    throw new Exception("wrong input - can`t reed topic...");
+                                    throw new Exception("wrong input - can`t read topic...");
                                 }
 
                                 Matcher markMatcher = markPattern.matcher(line);
@@ -189,7 +175,7 @@ public class StudentsDiary {
                                     mark = Integer.valueOf(markMatcher.group()).intValue();
                                     System.out.println("mark = " + mark);
                                 } else {
-                                    throw new Exception("wrong input - can`t reed mark...");
+                                    throw new Exception("wrong input - mark must be in interval of 2-5...");
                                 }
 
                                 DiaryService.add(topic, mark);
