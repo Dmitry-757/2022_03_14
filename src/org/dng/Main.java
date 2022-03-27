@@ -23,11 +23,22 @@ package org.dng;
 
  IntStream boxed()
  возвращает поток, состоящий из элементов этого потока, каждый из которых упакован в целое число
+
+ result = IntStream
+    .range(0, array.length)
+    .filter(i -> array[i].equals(topic))
+    .findFirst();
  */
 
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+
+//        Object s;
+//        switch (s){
+//            case String s1 ->{
+//                System.out.println("123");
+//            }
+//        }
     }
 }

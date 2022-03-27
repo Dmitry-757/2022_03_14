@@ -22,10 +22,10 @@ public class dz52_3 {
     }
 
     public static void main(String[] args) {
-        int[] arr = {1, 2, 3, 4, 5};
+        int[] arr = {1, 1, 1, 1, 2, 1, 1, 1};
         System.out.println(Arrays.toString(arr));
         if (HasDoubleValue(arr)) {
-            System.out.println("All elements in array are equals");
+            System.out.println("Aall array elements are the equal");
         } else {
             System.out.println("Elements of array are not equal");
         }

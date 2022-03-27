@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
  элементов массива различные (не повторяются).
  Массив задается и инициализируется в начале программы.
  */
+
 public class dz52_4 {
     public static boolean HasDoubleValue(int[] arr) {
         Set<Integer> mySet = IntStream.of(arr).boxed().collect(Collectors.toSet());
@@ -21,9 +22,9 @@ public class dz52_4 {
         int[] arr = {1, 2, 3, 4, 5};
         System.out.println(Arrays.toString(arr));
         if (HasDoubleValue(arr)) {
-            System.out.println("In array presents duplicated values");
+            System.out.println("Duplicated values presents in array");
         } else {
-            System.out.println("Array doesn`t contain duplicated values");
+            System.out.println("The array doesn`t contain duplicate values");
         }
         int[] arr2 = {1, 2, 2, 2, 5};
         System.out.println(Arrays.toString(arr2));
