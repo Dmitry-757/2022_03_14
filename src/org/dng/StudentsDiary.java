@@ -236,7 +236,7 @@ public class StudentsDiary {
 
                                 Matcher markMatcher = markPattern.matcher(line);
                                 if (markMatcher.find()) {
-                                    mark = Integer.valueOf(markMatcher.group().trim()).intValue();
+                                    mark = Integer.parseInt(markMatcher.group().trim());
                                     if((mark<2) || (mark > 5)){
                                         throw new Exception("wrong input - mark must be in interval of 2-5...");
                                     }
@@ -307,7 +307,7 @@ public class StudentsDiary {
 
                                 Matcher markMatcher = markPattern.matcher(line);
                                 if (markMatcher.find()) {
-                                    mark = Integer.valueOf(markMatcher.group().trim()).intValue();
+                                    mark = Integer.parseInt(markMatcher.group().trim());
                                     System.out.println("mark = " + mark);
                                 } else {
                                     throw new Exception("wrong input - mark must be in interval of 2-5...");
