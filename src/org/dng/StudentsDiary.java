@@ -1,12 +1,9 @@
 package org.dng;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -58,7 +55,6 @@ class DynemicalArr<T> {
         }
         System.arraycopy(array, idx + 1, newArray, idx, pointerOnLastEl - idx - 1);
         array = newArray;
-        newArray = null;
         pointerOnLastEl--;
 
         if (CONDITION4CUT < (array.length - pointerOnLastEl)) {
@@ -66,6 +62,7 @@ class DynemicalArr<T> {
             System.arraycopy(array, 0, newArray, 0, pointerOnLastEl);
             array = newArray;
         }
+        newArray = null;
     }
 
     public void show(String oper) {
@@ -91,10 +88,9 @@ class DynemicalArr<T> {
     }
 
     public boolean isValuePresent(T topic) {
-        boolean isPresent = Stream.of(array)
+        return Stream.of(array)
                 .filter(v -> v != null)
                 .anyMatch(v -> (v.equals(topic)));
-        return isPresent;
     }
 
     public int getIndexOfVal(T topic) {
@@ -106,7 +102,8 @@ class DynemicalArr<T> {
                             .filter(i -> array[i].equals(topic))
                             .findFirst();
         }
-        return result.getAsInt();
+//        return result.getAsInt();
+        return result.orElse(-1);
     }
 
 }
@@ -164,7 +161,9 @@ class DiaryService {
                 arr[i] = StudentsDiary.mark.getItem(i);
             }
         }
-        System.out.println("Average mark is "+IntStream.of(arr).average().getAsDouble());
+//        System.out.println("Average mark is "+IntStream.of(arr).average().getAsDouble());
+//        System.out.println("Average mark is "+IntStream.of(arr).average().orElse(-999));
+        IntStream.of(arr).average().ifPresentOrElse(v -> System.out.println(v), ()-> System.out.println("value not defined!"));
     }
 
     static void getMaxMark() {
@@ -223,8 +222,8 @@ public class StudentsDiary {
                         System.out.println("Enter topic and mark. Example: mathematics 5");
                         try {
                             if (sc.hasNextLine()) {
-                                String topic = null;
-                                int mark = 0;
+                                String topic;
+                                int mark;
                                 line = sc.nextLine();
                                 Matcher topicMatcher = topicPattern.matcher(line);
                                 if (topicMatcher.find()) {
@@ -250,14 +249,14 @@ public class StudentsDiary {
                             }
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
-                            continue;
+                            //continue;
                         }
                     }
                     case 2 -> {
                         System.out.println("Enter topic for removal. Example: Marksizm-Lenenizm");
                         try {
                             if (sc.hasNextLine()) {
-                                String topic = null;
+                                String topic;
                                 line = sc.nextLine();
                                 Matcher topicMatcher = topicPattern.matcher(line);
                                 if (topicMatcher.find()) {
@@ -270,7 +269,7 @@ public class StudentsDiary {
                             }
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
-                            continue;
+                            //continue;
                         }
                     }
                     case 3 ->{
@@ -294,7 +293,7 @@ public class StudentsDiary {
                         System.out.println("Enter topic for reset mark. Example: Marksizm-Lenenizm 3");
                         try {
                             if (sc.hasNextLine()) {
-                                String topic = null;
+                                String topic;
                                 int mark = 0;
                                 line = sc.nextLine();
                                 Matcher topicMatcher = topicPattern.matcher(line);
@@ -317,8 +316,8 @@ public class StudentsDiary {
                             }
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
-                            continue;
-                        } ;
+                            //continue;
+                        }
                     }
 
                     case 0 -> {
