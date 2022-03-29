@@ -23,6 +23,7 @@ import java.util.stream.Stream;
  * • реализовать возможность редактирования оценок – изменение оценки по нужному предмету
  * • добавление новых предметов/ удаление предметов
  * 3. Требование к программе: дружелюбный консольный интерфейс, отсутствие опечаток, использование массивов, циклов, условий.
+ * и трошки потренируюсь юзать stream ))
  * Так же нельзя позволять устанавливать оценки кроме 2, 3, 4, 5 – т.е. валидировать входные данные.
  */
 
@@ -42,6 +43,13 @@ class DynemicalArr<T> {
         array[pointerOnLastEl] = item;
         pointerOnLastEl++;
     }
+
+    public void set(int idx, T item) {
+        if ((0 < idx) && (idx <= pointerOnLastEl)) {
+            array[idx] = item;
+        }
+    }
+
 
     public void remove(int idx) {
         Object[] newArray = new Object[array.length - 1];
@@ -68,11 +76,6 @@ class DynemicalArr<T> {
         System.out.println("*********");
     }
 
-//    public <T> T[] createArray(Class<T> clazz, int size) {
-//        @SuppressWarnings("unchecked")
-//        T[] arr = (T[]) Array.newInstance(clazz, size);
-//        return arr;
-//    }
     //we will send a copy of the array outside, not the arrey itself - in order not to violate the principle of Encapsulation and "Open Closed Principle"  ))
     public Object[] getArr() {
         Object[] newArray = new Object[array.length];
@@ -90,7 +93,6 @@ class DynemicalArr<T> {
     public boolean isValuePresent(T topic) {
         boolean isPresent = Stream.of(array)
                 .filter(v -> v != null)
-//                .map(v -> v.toString())
                 .anyMatch(v -> (v.equals(topic)));
         return isPresent;
     }
@@ -98,13 +100,11 @@ class DynemicalArr<T> {
     public int getIndexOfVal(T topic) {
         OptionalInt result = OptionalInt.of(-1);
         if (isValuePresent(topic)) {
-//            if (array[0].getClass().getName() == "java.lang.String") {
             result =
                     IntStream
                             .range(0, array.length)
                             .filter(i -> array[i].equals(topic))
                             .findFirst();
-//            }
         }
         return result.getAsInt();
     }
@@ -118,22 +118,30 @@ class DiaryService {
         if (!StudentsDiary.topic.isValuePresent(topic)) {
             StudentsDiary.topic.add(topic);
             StudentsDiary.mark.add(mark);
-
-//            StudentsDiary.topic.show("+");
-//            StudentsDiary.mark.show("+");
         }
         else{
             System.out.println("Mark for the topic "+topic + " already present!");
         }
     }
 
+    static void edit(String topic, int mark) {
+        //check for inputting topic is new
+        if (StudentsDiary.topic.isValuePresent(topic)) {
+            int idx = StudentsDiary.topic.getIndexOfVal(topic);
+            StudentsDiary.topic.set(idx, topic);
+            StudentsDiary.mark.set(idx, mark);
+        }
+        else{
+            System.out.println("topic "+topic + " isn`t present!");
+        }
+    }
+
+
     static void remove(String topic) {
         int idx = StudentsDiary.topic.getIndexOfVal(topic);
         if (idx >= 0) {
             StudentsDiary.topic.remove(idx);
             StudentsDiary.mark.remove(idx);
-//            StudentsDiary.topic.show("-");
-//            StudentsDiary.mark.show("-");
             System.out.println("topic "+topic +" was removed.");
         }
         else{
@@ -195,20 +203,21 @@ public class StudentsDiary {
 
     public static void main(String[] args) {
 
-        Pattern topicPattern = Pattern.compile("^[a-zA-Z-/]+");
-        Pattern markPattern = Pattern.compile("[2-5]");
+        Pattern topicPattern = Pattern.compile("^[a-zA-Zа-яА-Я]+-?[a-zA-Zа-яА-Я]*");
+        Pattern markPattern = Pattern.compile("\\s\\d+");
         try (Scanner sc = new Scanner(System.in)) {
             boolean stop = false;
-            int choice = 0;
+            int choice = -1;
             String line;
             while (!stop) {
+                System.out.println();
                 System.out.println("Enter your choice: 1 - add topic and mark, 2 - remove topic");
-                System.out.println("3 - show average mark, 4 - show all marks, 5 - show max mark and topic, 6 - show min mark and topic");
+                System.out.println("3 - show average mark, 4 - show all marks, 5 - show max mark and topic, 6 - show min mark and topic, 7 - edit the mark for the topic");
                 System.out.println("0 - exit");
                 if (sc.hasNextInt()) {
                     choice = sc.nextInt();
-                    sc.nextLine();
                 }
+                sc.nextLine();
                 switch (choice) {
                     case 1 -> {
                         System.out.println("Enter topic and mark. Example: mathematics 5");
@@ -227,7 +236,10 @@ public class StudentsDiary {
 
                                 Matcher markMatcher = markPattern.matcher(line);
                                 if (markMatcher.find()) {
-                                    mark = Integer.valueOf(markMatcher.group()).intValue();
+                                    mark = Integer.valueOf(markMatcher.group().trim()).intValue();
+                                    if((mark<2) || (mark > 5)){
+                                        throw new Exception("wrong input - mark must be in interval of 2-5...");
+                                    }
                                     System.out.println("mark = " + mark);
                                 } else {
                                     throw new Exception("wrong input - mark must be in interval of 2-5...");
@@ -238,6 +250,7 @@ public class StudentsDiary {
                             }
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
+                            continue;
                         }
                     }
                     case 2 -> {
@@ -257,8 +270,13 @@ public class StudentsDiary {
                             }
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
+                            continue;
                         }
                     }
+                    case 3 ->{
+                        DiaryService.getAverageMark();
+                    }
+
                     case 4 ->{
                         System.out.println("All marks by all topics are :");
                         DiaryService.getAllMarks();
@@ -272,8 +290,35 @@ public class StudentsDiary {
                         DiaryService.getMinMark();
                     }
 
-                    case 7 ->{
-                        DiaryService.getAverageMark();
+                    case 7 -> {
+                        System.out.println("Enter topic for reset mark. Example: Marksizm-Lenenizm 3");
+                        try {
+                            if (sc.hasNextLine()) {
+                                String topic = null;
+                                int mark = 0;
+                                line = sc.nextLine();
+                                Matcher topicMatcher = topicPattern.matcher(line);
+                                if (topicMatcher.find()) {
+                                    topic = topicMatcher.group();
+                                    System.out.println("topic = " + topic);
+                                } else {
+                                    throw new Exception("wrong input - can`t find topic...");
+                                }
+
+                                Matcher markMatcher = markPattern.matcher(line);
+                                if (markMatcher.find()) {
+                                    mark = Integer.valueOf(markMatcher.group().trim()).intValue();
+                                    System.out.println("mark = " + mark);
+                                } else {
+                                    throw new Exception("wrong input - mark must be in interval of 2-5...");
+                                }
+
+                                DiaryService.edit(topic, mark);
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            continue;
+                        } ;
                     }
 
                     case 0 -> {
@@ -281,7 +326,7 @@ public class StudentsDiary {
                         System.out.println("Our great program is ended ;) !");
                     }
                     default -> {
-                        System.out.println("In our roulette you can only for choice: 1, 2, 3, 4, 5, 6 or 0 ;)");
+                        System.out.println("In our roulette you can only for choice: 1, 2, 3, 4, 5, 6, 7 or 0 ;)");
                     }
                 }
 
