@@ -83,8 +83,9 @@ class DynemicalArr<T> {
     public int getArrLenght() {
         return array.length;
     }
+
     public T getItem(int idx) {
-        return (T)array[idx];
+        return (T) array[idx];
     }
 
     public boolean isValuePresent(T topic) {
@@ -115,9 +116,8 @@ class DiaryService {
         if (!StudentsDiary.topic.isValuePresent(topic)) {
             StudentsDiary.topic.add(topic);
             StudentsDiary.mark.add(mark);
-        }
-        else{
-            System.out.println("Mark for the topic "+topic + " already present!");
+        } else {
+            System.out.println("Mark for the topic " + topic + " already present!");
         }
     }
 
@@ -127,9 +127,8 @@ class DiaryService {
             int idx = StudentsDiary.topic.getIndexOfVal(topic);
             StudentsDiary.topic.set(idx, topic);
             StudentsDiary.mark.set(idx, mark);
-        }
-        else{
-            System.out.println("topic "+topic + " isn`t present!");
+        } else {
+            System.out.println("topic " + topic + " isn`t present!");
         }
     }
 
@@ -139,9 +138,8 @@ class DiaryService {
         if (idx >= 0) {
             StudentsDiary.topic.remove(idx);
             StudentsDiary.mark.remove(idx);
-            System.out.println("topic "+topic +" was removed.");
-        }
-        else{
+            System.out.println("topic " + topic + " was removed.");
+        } else {
             System.out.println("we don't study this kind of crap...");
         }
     }
@@ -155,7 +153,7 @@ class DiaryService {
     }
 
     static void getAverageMark() {
-        int [] arr = new int[StudentsDiary.mark.getArrLenght()];
+        int[] arr = new int[StudentsDiary.mark.getArrLenght()];
         for (int i = 0; i < StudentsDiary.mark.getArrLenght(); i++) {
             if (StudentsDiary.topic.getItem(i) != null) {
                 arr[i] = StudentsDiary.mark.getItem(i);
@@ -163,7 +161,7 @@ class DiaryService {
         }
 //        System.out.println("Average mark is "+IntStream.of(arr).average().getAsDouble());
 //        System.out.println("Average mark is "+IntStream.of(arr).average().orElse(-999));
-        IntStream.of(arr).average().ifPresentOrElse(v -> System.out.println(v), ()-> System.out.println("value not defined!"));
+        IntStream.of(arr).average().ifPresentOrElse(v -> System.out.println(v), () -> System.out.println("value not defined!"));
     }
 
     static void getMaxMark() {
@@ -177,7 +175,7 @@ class DiaryService {
                 }
             }
         }
-        System.out.println("Max mark is "+max+ " on topic "+ StudentsDiary.topic.getItem(idx));
+        System.out.println("Max mark is " + max + " on topic " + StudentsDiary.topic.getItem(idx));
     }
 
     static void getMinMark() {
@@ -191,7 +189,7 @@ class DiaryService {
                 }
             }
         }
-        System.out.println("Min mark is "+min+ " on topic "+ StudentsDiary.topic.getItem(idx));
+        System.out.println("Min mark is " + min + " on topic " + StudentsDiary.topic.getItem(idx));
     }
 
 }
@@ -236,7 +234,7 @@ public class StudentsDiary {
                                 Matcher markMatcher = markPattern.matcher(line);
                                 if (markMatcher.find()) {
                                     mark = Integer.parseInt(markMatcher.group().trim());
-                                    if((mark<2) || (mark > 5)){
+                                    if ((mark < 2) || (mark > 5)) {
                                         throw new Exception("wrong input - mark must be in interval of 2-5...");
                                     }
                                     System.out.println("mark = " + mark);
@@ -272,20 +270,20 @@ public class StudentsDiary {
                             //continue;
                         }
                     }
-                    case 3 ->{
+                    case 3 -> {
                         DiaryService.getAverageMark();
                     }
 
-                    case 4 ->{
+                    case 4 -> {
                         System.out.println("All marks by all topics are :");
                         DiaryService.getAllMarks();
                     }
 
-                    case 5 ->{
+                    case 5 -> {
                         DiaryService.getMaxMark();
                     }
 
-                    case 6 ->{
+                    case 6 -> {
                         DiaryService.getMinMark();
                     }
 
