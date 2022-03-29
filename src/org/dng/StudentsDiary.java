@@ -292,7 +292,7 @@ public class StudentsDiary {
                         try {
                             if (sc.hasNextLine()) {
                                 String topic;
-                                int mark = 0;
+                                int mark;
                                 line = sc.nextLine();
                                 Matcher topicMatcher = topicPattern.matcher(line);
                                 if (topicMatcher.find()) {
